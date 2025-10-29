@@ -1,0 +1,59 @@
+/*
+================================================================================
+VIEW NAME: cleaned_movies.analysis_movie_ready_vw
+--------------------------------------------------------------------------------
+DESCRIPTION:
+This view provides a cleaned and analysis-ready dataset of movie sales,
+including key financial metrics and metadata. It is designed to support
+reporting, visualization, and advanced analytics across movie performance.
+
+SOURCE TABLE:
+- Bummpt.cleaned_movies.movies_sales
+
+COLUMNS INCLUDED:
+- Movie_Title: Title of the movie
+- Release_Date: Official release date
+- Wikipedia_URL: Link to the movie's Wikipedia page
+- Genre: Primary genre classification
+- Director_1: Lead director of the movie
+- Cast_1, Cast_2, Cast_3: Top-billed cast members
+- Budget: Production budget (in USD)
+- Revenue: Total revenue generated (in USD)
+- Profit: Revenue minus budget
+- Return_On_Investment: Profit as a percentage of budget
+- Revenue_Category: Categorical classification of revenue performance
+- Date_Updated: Timestamp of last data refresh
+
+USAGE NOTES:
+- Ideal for dashboards, trend analysis, and ROI reporting
+- Can be joined with other views for enriched insights (e.g., marketing spend)
+- Ensure filters on Release_Date or Genre for performance optimization
+
+AUTHOR: Matthew [Your GitHub handle or team name]
+CREATED ON: [Insert Date]
+VERSION: 1.0
+
+================================================================================
+*/
+
+CREATE VIEW cleaned_movies.analysis_movie_ready_vw AS
+SELECT 
+	Movie_Title,
+	Release_Date,
+	Wikipedia_URL,
+	Genre,
+	Director_1,
+	Cast_1,
+	Cast_2,
+	Cast_3,
+	Budget,
+	Revenue,
+	Profit,
+	Return_On_Investment,
+	Revenue_Category,
+	Date_Updated
+FROM
+	Bummpt.cleaned_movies.movies_sales
+
+
+-- SELECT * FROM cleaned_movies.analysis_movie_ready_vw
