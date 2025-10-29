@@ -1,0 +1,93 @@
+/*
+================================================================================
+PROCEDURE NAME: cleaned_movies.movies_analysis_ready
+--------------------------------------------------------------------------------
+DESCRIPTION:
+This procedure transforms and loads cleaned movie sales data into the
+`cleaned_movies.movies_sales` table. It applies business logic to calculate
+key financial metrics and categorizes revenue performance for analytical use.
+
+KEY FEATURES:
+- Extracts relevant fields from `movie.movies_sales`
+- Filters out movies with revenue below $100M
+- Calculates:
+    - Profit: Revenue minus Budget
+    - Return_On_Investment: ROI as a percentage
+    - Revenue_Category: High, Moderate, or Poor based on thresholds
+- Inserts the cleaned and enriched data into the analysis-ready table
+
+TRANSFORMATION LOGIC:
+- Budget and Revenue are cast to `decimal(19,2)` for precision
+- ROI is rounded to 4 decimal places
+- Revenue_Category is derived using conditional logic:
+    - High: Revenue ≥ $500M
+    - Moderate: Revenue ≥ $100M and < $500M
+    - Poor: Revenue < $100M (excluded from this procedure)
+
+USAGE NOTES:
+- Run this procedure after creating the `cleaned_movies.movies_sales` table
+- Supports ETL workflows and downstream analytics
+- Can be scheduled or triggered as part of a data refresh pipeline
+
+AUTHOR: Matthew [Your GitHub handle or team name]
+CREATED ON: [Insert Date]
+VERSION: 1.0
+
+================================================================================
+*/
+
+
+-- Create a schema that will house the cleaned data called cleaned_movies
+-- CREATE SCHEMA cleaned_movies
+
+
+-- Create a view for a virtual table 
+CREATE PROCEDURE cleaned_movies.movies_analysis_ready AS 
+
+BEGIN
+-- Here in this script we will clean the dataset and use the SELECT statement to load the cleaned dataset into the empty cleaned table created.
+INSERT INTO cleaned_movies.movies_sales (
+	Movie_Title,
+	Release_Date,
+	Wikipedia_URL,
+	Genre,
+	Director_1,
+	Cast_1,
+	Cast_2,
+	Cast_3,
+	Budget,
+	Revenue,
+	Profit,
+	Return_On_Investment,
+	Revenue_Category
+)
+SELECT
+	Movie_Title, 
+    Release_Date, 
+    Wikipedia_URL,
+    Genre,
+    Director_1,
+   -- Director_2,
+    Cast_1,
+    Cast_2,
+    Cast_3,
+    -- Cast_4,
+    -- Cast_5,
+    CAST(Budget AS decimal(19, 2)) AS Budget, 
+    CAST(Revenue AS decimal(19,2)) AS Revenue,
+	(Revenue - Budget) AS Profit,
+	ROUND(((Revenue - Budget)/Budget) * 100, 4) AS Return_On_Investment,
+	CASE
+		WHEN Revenue >= 500000000 THEN 'High'
+		WHEN Revenue >= 100000000 THEN 'Moderate'
+		ELSE 'Poor'
+	END AS Revenue_Category
+FROM
+	movie.movies_sales
+WHERE Revenue >= 100000000
+
+
+END
+
+
+
