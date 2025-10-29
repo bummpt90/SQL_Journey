@@ -1,0 +1,81 @@
+/*
+================================================================================
+PROCEDURE NAME: cleaned_movies.movies_sales
+--------------------------------------------------------------------------------
+DESCRIPTION:
+This procedure creates a cleaned version of the movie sales dataset by
+dropping and recreating the `cleaned_movies.movies_sales` table. It ensures
+that the raw dataset remains intact for comparison and audit purposes.
+
+KEY FEATURES:
+- Drops the existing cleaned table if it exists
+- Recreates the table with a defined schema for analysis-ready data
+- Includes metadata fields such as Date_Updated for tracking refreshes
+
+TABLE STRUCTURE:
+- Movie_Title: VARCHAR(255) — Title of the movie (required)
+- Release_Date: DATE — Official release date
+- Wikipedia_URL: VARCHAR(500) — Link to Wikipedia page
+- Genre: VARCHAR(100) — Primary genre
+- Director_1: VARCHAR(100) — Lead director
+- Cast_1 to Cast_3: VARCHAR(100) — Top-billed cast members
+- Budget: BIGINT — Production budget in USD
+- Revenue: BIGINT — Total revenue in USD
+- Profit: BIGINT — Revenue minus budget
+- Return_On_Investment: INT — ROI percentage
+- Revenue_Category: VARCHAR(50) — Categorical revenue classification
+- Date_Updated: DATETIME — Timestamp of table creation (default: current date)
+
+USAGE NOTES:
+- Run this procedure before populating the cleaned table with transformed data
+- Useful for ETL pipelines, data refresh routines, and reproducible analytics
+- Ensure proper permissions for dropping and creating tables in the schema
+
+AUTHOR: Matthew [bummpt90]
+CREATED ON: 29th October, 2025
+VERSION: 1.0
+
+================================================================================
+*/
+
+
+-- Here we create the empty table that we hold the cleaned data while the raw dataset set remains intact for comparism
+
+CREATE PROCEDURE cleaned_movies.movies_sales AS 
+BEGIN
+
+IF OBJECT_ID('cleaned_movies.movies_sales', 'U') IS NOT NULL 
+BEGIN
+
+
+ -- If the table exists, DROP TABLE permanently removes the table and all its data 
+    DROP TABLE cleaned_movies.movies_sales;
+    PRINT 'Existing table cleaned_movies.movies_sales dropped successfully.';
+END
+
+-- Here we create the table
+PRINT '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++';
+PRINT 'Cleaned table created and waiting to be updated';
+PRINT '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++';
+
+CREATE TABLE cleaned_movies.movies_sales (
+	Movie_Title VARCHAR(255) NOT NULL, 
+    Release_Date DATE NULL, 
+    Wikipedia_URL VARCHAR(500) NULL,
+    Genre VARCHAR(100) NULL,
+    Director_1 VARCHAR(100) NULL,
+   -- Director_2 VARCHAR(100) NULL,
+    Cast_1 VARCHAR(100) NULL,
+    Cast_2 VARCHAR(100) NULL,
+    Cast_3 VARCHAR(100) NULL,
+   -- Cast_4 VARCHAR(100) NULL,
+   -- Cast_5 VARCHAR(100) NULL,
+    Budget BIGINT NULL, 
+    Revenue BIGINT NULL,
+	Profit BIGINT NULL,
+	Return_On_Investment INT NULL,
+	Revenue_Category VARCHAR(50) NULL,
+	Date_Updated DATETIME DEFAULT GETDATE() 
+)
+
+END
